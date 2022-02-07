@@ -7,6 +7,7 @@ pipeline {
             steps {
                 sh 'npm -v'
                 sh 'git --version'
+                sh 'newman -v'
             }
         }
         stage('Checkout code') {
