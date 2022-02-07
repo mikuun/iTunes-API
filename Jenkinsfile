@@ -17,14 +17,9 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'npm install'
-                sh 'npm newman run iTunesAPI.postman_collection.json'
-            }
-        }
-        stage('Unit Test') {
-            steps {
-              echo "Unit test..."
-                // sh 'npm test -- --coverage'
+                echo 'Build by running the postman scripts from file'
+                //sh 'npm install'
+                //sh 'npm newman run iTunesAPI.postman_collection.json'
             }
         }
     }
