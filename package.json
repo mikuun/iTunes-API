@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "",
   "author": "",
+  "scripts": {
+    "newman-tests": "newman run iTunesAPI.postman_collection.json"
+  },
   "dependencies": {
     "newman": "^5.3.1"
   }
