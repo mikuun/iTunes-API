@@ -1,0 +1,9 @@
+{
+  "name": "itunes-api",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "dependencies": {
+    "newman": "^5.3.1"
+  }
+}
