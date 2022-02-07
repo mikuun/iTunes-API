@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo 'Build by running the postman scripts from file'
                 sh 'npm install'
-                sh 'npm newman run iTunesAPI.postman_collection.json'
+                sh 'newman run iTunesAPI.postman_collection.json'
             }
         }
     }
