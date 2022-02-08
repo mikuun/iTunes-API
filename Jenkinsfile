@@ -9,17 +9,15 @@ pipeline {
                 sh 'git --version'
             }
         }
-        stage('Checkout code') {
+        stage('Checkout code from GitHub') {
             steps {
                 git branch: 'main',
                 url:'https://github.com/mikuun/iTunes-API'
             }
         }
-        stage('Build') {
+        stage('Build from Postman-file') {
             steps {
-                echo 'Build by running the postman scripts from file'
                 sh 'npm install'
-                //sh 'newman run iTunesAPI.postman_collection.json'
                 sh 'npm run newman-tests'
             }
         }
