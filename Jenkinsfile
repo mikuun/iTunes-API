@@ -15,7 +15,7 @@ pipeline {
                 url:'https://github.com/mikuun/iTunes-API'
             }
         }
-        stage('Build from Postman-file') {
+        stage('Run Postman-collection') {
             steps {
                 sh 'npm install'
                 sh 'npm run newman-tests'
