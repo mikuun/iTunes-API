@@ -350,13 +350,7 @@
 							"  pm.expect(resultData[\"wrapperType\"]).to.eql(\"track\");\r",
 							"  pm.expect(resultData[\"kind\"]).to.eql(\"song\");\r",
 							"  pm.expect(resultData[\"previewUrl\"]).to.contain(\".m4a\");\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Verify: limit 1 returns 1 result\", () => {\r",
-							"    pm.globals.set(\"limit\", 1);\r",
-							"    pm.expect(jsonData[\"resultCount\"]).to.eql(1);\r",
-							"});\r",
-							""
+							"});"
 						],
 						"type": "text/javascript"
 					}
