@@ -6,7 +6,330 @@
 	},
 	"item": [
 		{
-			"name": "GET with parameters",
+			"name": "Limits",
+			"item": [
+				{
+					"name": "Verify limits: Minimum",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = jsonData.results;\r",
+									"\r",
+									"pm.test(\"Limit=1 returns resultCount: 1\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.eql(1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Limit=1 returns results with length 1\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(1);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"limit\", 1);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "{{country}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entity}}"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "term",
+									"value": "{{searchTerm}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify limits: Maximum",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = jsonData.results;\r",
+									"\r",
+									"pm.test(\"Limit=200 returns resultCount: 200\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Limit=200 returns results with length 200\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"limit\", 200);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "{{country}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entity}}"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "term",
+									"value": "{{searchTerm}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify limits: Over range",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = jsonData.results;\r",
+									"\r",
+									"pm.test(\"Limit=250 returns resultCount: 200\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Limit=250 returns results with length 200\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"limit\", 250);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "{{country}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entity}}"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "term",
+									"value": "{{searchTerm}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify limits: Not a number",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = jsonData.results;\r",
+									"\r",
+									"pm.test(\"Limit=NaN returns resultCount: 50\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.eql(50);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Limit=NaN returns results with length 50\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(50);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"limit\", \"querty\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "{{country}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entity}}"
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "term",
+									"value": "{{searchTerm}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Status codes",
+			"item": [
+				{
+					"name": "Status codes: empty request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}?term=",
+							"host": [
+								"{{baseURL}}"
+							],
+							"query": [
+								{
+									"key": "term",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search musicTrack in Sweden",
 			"event": [
 				{
 					"listen": "test",
@@ -24,8 +347,14 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Test content of the response\", () => {\r",
-							"  pm.expect(resultData[\"trackName\"]).to.eql(\"Headphones Baby\");\r",
+							"  pm.expect(resultData[\"wrapperType\"]).to.eql(\"track\");\r",
+							"  pm.expect(resultData[\"kind\"]).to.eql(\"song\");\r",
 							"  pm.expect(resultData[\"previewUrl\"]).to.contain(\".m4a\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify: limit 1 returns 1 result\", () => {\r",
+							"    pm.globals.set(\"limit\", 1);\r",
+							"    pm.expect(jsonData[\"resultCount\"]).to.eql(1);\r",
 							"});\r",
 							""
 						],
@@ -37,15 +366,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "https://itunes.apple.com/search?country=SE&entity=musicTrack&limit=1&term={{title}}+{{artist}}",
-					"protocol": "https",
+					"raw": "{{baseURL}}?country=SE&entity=musicTrack&limit={{limit}}&term=abba",
 					"host": [
-						"itunes",
-						"apple",
-						"com"
-					],
-					"path": [
-						"search"
+						"{{baseURL}}"
 					],
 					"query": [
 						{
@@ -58,184 +381,16 @@
 						},
 						{
 							"key": "limit",
-							"value": "1"
+							"value": "{{limit}}"
 						},
 						{
 							"key": "term",
-							"value": "{{title}}+{{artist}}"
+							"value": "abba"
 						}
 					]
 				}
 			},
-			"response": [
-				{
-					"name": "The Vaccines - Headphones Baby result",
-					"originalRequest": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "https://itunes.apple.com/search?country=SE&entity=musicTrack&limit=1&term=the+vaccines+headphones+baby",
-							"protocol": "https",
-							"host": [
-								"itunes",
-								"apple",
-								"com"
-							],
-							"path": [
-								"search"
-							],
-							"query": [
-								{
-									"key": "country",
-									"value": "SE"
-								},
-								{
-									"key": "entity",
-									"value": "musicTrack"
-								},
-								{
-									"key": "limit",
-									"value": "1"
-								},
-								{
-									"key": "term",
-									"value": "the+vaccines+headphones+baby"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "JSON",
-					"header": [
-						{
-							"key": "x-apple-jingle-correlation-key",
-							"value": "K4KPHRK5KTNBF6H4LAQIJXOHNY"
-						},
-						{
-							"key": "x-apple-request-uuid",
-							"value": "5714f3c5-5d54-da12-f8fc-582084ddc76e"
-						},
-						{
-							"key": "x-apple-translated-wo-url",
-							"value": "/WebObjects/MZStoreServices.woa/ws/wsSearch?country=SE&entity=musicTrack&limit=1&term=headphones+baby+the+vaccines&urlDesc="
-						},
-						{
-							"key": "apple-tk",
-							"value": "false"
-						},
-						{
-							"key": "x-b3-spanid",
-							"value": "f61fd326eb57a083"
-						},
-						{
-							"key": "Content-Type",
-							"value": "text/javascript; charset=utf-8"
-						},
-						{
-							"key": "b3",
-							"value": "5714f3c55d54da12f8fc582084ddc76e-f61fd326eb57a083"
-						},
-						{
-							"key": "x-content-type-options",
-							"value": "nosniff"
-						},
-						{
-							"key": "x-b3-traceid",
-							"value": "5714f3c55d54da12f8fc582084ddc76e"
-						},
-						{
-							"key": "x-webobjects-loadaverage",
-							"value": "0"
-						},
-						{
-							"key": "x-responding-instance",
-							"value": "MZStoreServices:2006720:::"
-						},
-						{
-							"key": "apple-seq",
-							"value": "0"
-						},
-						{
-							"key": "content-disposition",
-							"value": "attachment; filename=1.txt"
-						},
-						{
-							"key": "apple-originating-system",
-							"value": "MZStoreServices"
-						},
-						{
-							"key": "Content-Encoding",
-							"value": "gzip"
-						},
-						{
-							"key": "strict-transport-security",
-							"value": "max-age=31536000"
-						},
-						{
-							"key": "x-apple-orig-url",
-							"value": "https://mzstoreservices-int-st.itunes.apple.com/search?country=SE&entity=musicTrack&limit=1&term=headphones+baby+the+vaccines"
-						},
-						{
-							"key": "x-apple-application-site",
-							"value": "ST11"
-						},
-						{
-							"key": "apple-timing-app",
-							"value": "67 ms"
-						},
-						{
-							"key": "x-apple-application-instance",
-							"value": "2006720"
-						},
-						{
-							"key": "Content-Length",
-							"value": "639"
-						},
-						{
-							"key": "Vary",
-							"value": "Accept-Encoding"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "max-age=82740"
-						},
-						{
-							"key": "Date",
-							"value": "Fri, 21 Jan 2022 13:46:30 GMT"
-						},
-						{
-							"key": "X-Cache",
-							"value": "TCP_MISS from a104-78-78-71.deploy.akamaitechnologies.com (AkamaiGHost/10.7.0-38102849) (-)"
-						},
-						{
-							"key": "X-True-Cache-Key",
-							"value": "/L/itunes.apple.com/search vcd=2897 ci2=country=SE&entity=musicTrack&limit=1&term=headphones+baby+the+vaccines///"
-						},
-						{
-							"key": "Connection",
-							"value": "keep-alive"
-						},
-						{
-							"key": "X-Cache-Remote",
-							"value": "TCP_HIT from a104-78-78-68.deploy.akamaitechnologies.com (AkamaiGHost/10.7.0-38102849) (-)"
-						},
-						{
-							"key": "X-Apple-Partner",
-							"value": "origin.0"
-						}
-					],
-					"cookie": [],
-					"body": "\n\n\n{\n \"resultCount\":1,\n \"results\": [\n{\"wrapperType\":\"track\", \"kind\":\"song\", \"artistId\":5184234, \"collectionId\":1562831030, \"trackId\":1562831032, \"artistName\":\"The Vaccines\", \"collectionName\":\"Headphones Baby - Single\", \"trackName\":\"Headphones Baby\", \"collectionCensoredName\":\"Headphones Baby - Single\", \"trackCensoredName\":\"Headphones Baby\", \"artistViewUrl\":\"https://music.apple.com/se/artist/the-vaccines/5184234?uo=4\", \"collectionViewUrl\":\"https://music.apple.com/se/album/headphones-baby/1562831030?i=1562831032&uo=4\", \"trackViewUrl\":\"https://music.apple.com/se/album/headphones-baby/1562831030?i=1562831032&uo=4\", \n\"previewUrl\":\"https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/41/05/4c/41054c0d-fa43-c831-e449-13099fdb2e07/mzaf_4365584095732680565.plus.aac.p.m4a\", \"artworkUrl30\":\"https://is4-ssl.mzstatic.com/image/thumb/Music114/v4/fe/da/ba/fedaba03-9efc-8abb-9a22-408900c93377/source/30x30bb.jpg\", \"artworkUrl60\":\"https://is4-ssl.mzstatic.com/image/thumb/Music114/v4/fe/da/ba/fedaba03-9efc-8abb-9a22-408900c93377/source/60x60bb.jpg\", \"artworkUrl100\":\"https://is4-ssl.mzstatic.com/image/thumb/Music114/v4/fe/da/ba/fedaba03-9efc-8abb-9a22-408900c93377/source/100x100bb.jpg\", \"collectionPrice\":12.00, \"trackPrice\":12.00, \"releaseDate\":\"2021-05-14T12:00:00Z\", \"collectionExplicitness\":\"notExplicit\", \"trackExplicitness\":\"notExplicit\", \"discCount\":1, \"discNumber\":1, \"trackCount\":1, \"trackNumber\":1, \"trackTimeMillis\":198467, \"country\":\"SWE\", \"currency\":\"SEK\", \"primaryGenreName\":\"Alternativt\", \"isStreamable\":true}]\n}\n\n\n"
-				}
-			]
+			"response": []
 		}
 	],
 	"event": [
@@ -260,18 +415,20 @@
 	],
 	"variable": [
 		{
-			"key": "Base url-string",
-			"value": "https://itunes.apple.com/search?country=SE&entity=musicTrack&limit=1&term="
+			"key": "country",
+			"value": "SE"
 		},
 		{
-			"key": "title",
-			"value": "headphones+baby",
-			"type": "string"
+			"key": "baseURL",
+			"value": "https://itunes.apple.com/search"
 		},
 		{
-			"key": "artist",
-			"value": "the+vaccines",
-			"type": "string"
+			"key": "entity",
+			"value": "musicTrack"
+		},
+		{
+			"key": "searchTerm",
+			"value": "abba"
 		}
 	]
 }
