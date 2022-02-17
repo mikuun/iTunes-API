@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "scripts": {
-    "newman-tests": "newman run iTunesAPI.postman_collection.json"
+    "newman-tests": "newman run iTunesAPI.postman_collection.json --reporters cli,junit --reporter-junit-export 'report/newmanreport.xml'"
   },
   "dependencies": {
     "newman": "^5.3.1"
