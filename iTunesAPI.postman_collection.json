@@ -18,6 +18,7 @@
 									"const jsonData = pm.response.json();\r",
 									"const resultData = jsonData.results;\r",
 									"\r",
+									"\r",
 									"pm.test(\"Limit=1 returns resultCount: 1\", () => {\r",
 									"    pm.expect(jsonData[\"resultCount\"]).to.eql(1);\r",
 									"});\r",
@@ -43,9 +44,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
 							"host": [
-								"{{baseURL}}"
+								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
@@ -104,9 +105,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
 							"host": [
-								"{{baseURL}}"
+								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
@@ -165,9 +166,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
 							"host": [
-								"{{baseURL}}"
+								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
@@ -226,9 +227,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
+							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
 							"host": [
-								"{{baseURL}}"
+								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
@@ -312,9 +313,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURL}}?term=",
+							"raw": "{{baseURLSearch}}?term=",
 							"host": [
-								"{{baseURL}}"
+								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
@@ -329,62 +330,241 @@
 			]
 		},
 		{
-			"name": "Search musicTrack in Sweden",
+			"name": "Search/lookup sequence",
+			"item": [
+				{
+					"name": "Search for artist and save variable artistId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const resultData = pm.response.json().results;\r",
+									"const queryString = pm.variables.replaceIn(pm.request.url.query.toString());\r",
+									"const queryName = queryString.slice(52, -8);\r",
+									"\r",
+									"if (resultData.length == 0) {\r",
+									"    postman.setNextRequest(\"Search for artist and save variable artistId\");\r",
+									"} else {\r",
+									"    /* Set iTunes Artist ID variable */\r",
+									"    pm.globals.set(\"artistID\", resultData[0].artistId);\r",
+									"    pm.globals.set(\"queryName\", queryName);\r",
+									"\r",
+									"    pm.test(\"Country is SWE\", () => {\r",
+									"        pm.expect(resultData[0].country).to.eql(\"SWE\");\r",
+									"    });\r",
+									"    pm.test(\"Kind is song\", () => {\r",
+									"        pm.expect(resultData[0].kind).to.eql(\"song\");\r",
+									"    });\r",
+									"    pm.test(\"artistName include search term\", () => { //TODO: a bit flaky\r",
+									"        pm.expect(resultData[0].artistName.toLowerCase()).to.include(queryName.toLowerCase());\r",
+									"    });\r",
+									"}   "
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?country=SE&entity=song&attribute=allArtistTerm&term={{$randomFirstName}}&limit=1",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "SE"
+								},
+								{
+									"key": "entity",
+									"value": "song"
+								},
+								{
+									"key": "attribute",
+									"value": "allArtistTerm"
+								},
+								{
+									"key": "term",
+									"value": "{{$randomFirstName}}"
+								},
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "term",
+									"value": "Anna",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup iTunes Artist ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const resultData = pm.response.json().results[0];\r",
+									"const artistID = pm.globals.get(\"artistID\");\r",
+									"\r",
+									"pm.test(\"Correct artist ID is returned\", () => {\r",
+									"  pm.expect(resultData.artistId).to.eql(artistID);\r",
+									"});\r",
+									"pm.test(\"WrapperType is artist\", () => {\r",
+									"  pm.expect(resultData.wrapperType).to.eql(\"artist\");\r",
+									"});\r",
+									"\r",
+									"/* Set AMG Artist ID variable */\r",
+									"pm.globals.set(\"amgID\", resultData.amgArtistId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?id={{artistID}}",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{artistID}}"
+								},
+								{
+									"key": "entity",
+									"value": "album",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "entity",
+									"value": "song",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "recent",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup AMG Artist ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const resultData = pm.response.json().results[0];\r",
+									"const amgID = pm.globals.get(\"amgID\");\r",
+									"\r",
+									"pm.test(\"Correct AMG artist ID is returned\", () => {\r",
+									"  pm.expect(resultData.amgArtistId).to.eql(amgID);\r",
+									"});\r",
+									"pm.test(\"WrapperType is artist\", () => {\r",
+									"  pm.expect(resultData.wrapperType).to.eql(\"artist\");\r",
+									"});\r",
+									"\r",
+									"/* Set AMG Artist ID variable */\r",
+									"//pm.globals.set(\"amgID\", resultData.amgArtistId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?amgArtistId={{amgID}}",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "amgArtistId",
+									"value": "{{amgID}}"
+								},
+								{
+									"key": "entity",
+									"value": "album",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "5",
+									"disabled": true
+								},
+								{
+									"key": "entity",
+									"value": "song",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "recent",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
 			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
 				{
 					"listen": "test",
 					"script": {
+						"type": "text/javascript",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"const jsonData = pm.response.json();\r",
-							"const resultData = jsonData.results[\"0\"];\r",
-							"\r",
-							"pm.test(\"Test data type of the response\", () => {\r",
-							"  pm.expect(jsonData).to.be.an(\"object\");\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Test content of the response\", () => {\r",
-							"  pm.expect(resultData[\"wrapperType\"]).to.eql(\"track\");\r",
-							"  pm.expect(resultData[\"kind\"]).to.eql(\"song\");\r",
-							"  pm.expect(resultData[\"previewUrl\"]).to.contain(\".m4a\");\r",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
 							"});"
-						],
-						"type": "text/javascript"
+						]
 					}
 				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{baseURL}}?country=SE&entity=musicTrack&limit={{limit}}&term=abba",
-					"host": [
-						"{{baseURL}}"
-					],
-					"query": [
-						{
-							"key": "country",
-							"value": "SE"
-						},
-						{
-							"key": "entity",
-							"value": "musicTrack"
-						},
-						{
-							"key": "limit",
-							"value": "{{limit}}"
-						},
-						{
-							"key": "term",
-							"value": "abba"
-						}
-					]
-				}
-			},
-			"response": []
+			]
 		}
 	],
 	"event": [
@@ -413,8 +593,13 @@
 			"value": "SE"
 		},
 		{
-			"key": "baseURL",
+			"key": "baseURLSearch",
 			"value": "https://itunes.apple.com/search"
+		},
+		{
+			"key": "baseURLLookup",
+			"value": "https://itunes.apple.com/lookup",
+			"type": "string"
 		},
 		{
 			"key": "entity",
@@ -423,6 +608,14 @@
 		{
 			"key": "searchTerm",
 			"value": "abba"
+		},
+		{
+			"key": "IDValid",
+			"value": "909253"
+		},
+		{
+			"key": "ISBNValid",
+			"value": "9780316069359"
 		}
 	]
 }
