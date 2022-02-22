@@ -6,6 +6,245 @@
 	},
 	"item": [
 		{
+			"name": "Search/lookup sequence",
+			"item": [
+				{
+					"name": "Search for artist and save variable artistId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"const queryString = pm.variables.replaceIn(pm.request.url.query.toString());\r",
+									"const queryName = queryString.slice(45, -10);\r",
+									"\r",
+									"if (resultData.length < 200) {\r",
+									"    postman.setNextRequest(\"Search for artist and save variable artistId DEV\");\r",
+									"} else {\r",
+									"    const amgFound = resultData.filter((result) => result.amgArtistId);\r",
+									"    console.log(amgFound);\r",
+									"\r",
+									"    pm.test(\"Limit 250 returns resultCount: 200\", () => {\r",
+									"        pm.expect(jsonData[\"resultCount\"]).to.eql(200);\r",
+									"    });\r",
+									"    pm.test(\"Limit 250 returns results with length 200\", () => {\r",
+									"        pm.expect(resultData.length).to.eql(200);\r",
+									"    });\r",
+									"    pm.test(\"wrapperType is artist\", () => {\r",
+									"        pm.expect(resultData[0].wrapperType).to.eql(\"artist\");\r",
+									"    });\r",
+									"    pm.test(\"artistName include search term\", () => { \r",
+									"        //TODO: a bit flaky\r",
+									"        pm.expect(resultData[0].artistName.toLowerCase()).to.include(queryName.toLowerCase());\r",
+									"    });\r",
+									"\r",
+									"    /* Set iTunes Artist ID variable */\r",
+									"    pm.globals.set(\"artistID\", amgFound[0].artistId);\r",
+									"    pm.globals.set(\"queryName\", queryName);\r",
+									"}   "
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?entity=musicArtist&attribute=artistTerm&term={{$randomFirstName}}&limit=250",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "entity",
+									"value": "musicArtist"
+								},
+								{
+									"key": "attribute",
+									"value": "artistTerm"
+								},
+								{
+									"key": "term",
+									"value": "{{$randomFirstName}}"
+								},
+								{
+									"key": "limit",
+									"value": "250"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup iTunes Artist ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"const artistID = pm.globals.get(\"artistID\");\r",
+									"const amgFound = resultData.filter((result) => result.amgArtistId);\r",
+									"\r",
+									"pm.test(\"Limit 5 returns resultCount: 6 (5 songs + 1 artist)\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.eql(6);\r",
+									"});\r",
+									"pm.test(\"Limit 5 returns results with length 6 (5 songs + 1 artist)\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(6);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Correct artist ID is returned\", () => {\r",
+									"  pm.expect(resultData[0].artistId).to.eql(artistID);\r",
+									"});\r",
+									"pm.test(\"WrapperType for first object is artist\", () => {\r",
+									"  pm.expect(resultData[0].wrapperType).to.eql(\"artist\");\r",
+									"});\r",
+									"pm.test(\"WrapperType for second object is track\", () => {\r",
+									"  pm.expect(resultData[1].wrapperType).to.eql(\"track\");\r",
+									"});\r",
+									"\r",
+									"if (amgFound.length == 0) {\r",
+									"    postman.setNextRequest(\"Search for artist and save variable artistId\");\r",
+									"} else {\r",
+									"    /* Set AMG Artist ID variable */\r",
+									"    pm.globals.set(\"amgID\", resultData[0].amgArtistId);\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?id={{artistID}}&entity=song&limit=5&sort=top",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{artistID}}"
+								},
+								{
+									"key": "entity",
+									"value": "song"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "top"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup AMG Artist ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const resultData = pm.response.json().results[0];\r",
+									"const amgID = pm.globals.get(\"amgID\");\r",
+									"\r",
+									"pm.test(\"Correct AMG artist ID is returned\", () => {\r",
+									"  pm.expect(resultData.amgArtistId).to.eql(amgID);\r",
+									"});\r",
+									"pm.test(\"WrapperType is artist\", () => {\r",
+									"  pm.expect(resultData.wrapperType).to.eql(\"artist\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?amgArtistId={{amgID}}&entity=album&limit=5",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "amgArtistId",
+									"value": "{{amgID}}"
+								},
+								{
+									"key": "entity",
+									"value": "album"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "entity",
+									"value": "song",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "recent",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const jsonData = pm.response.json();",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "Limits",
 			"item": [
 				{
@@ -326,243 +565,6 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Search/lookup sequence",
-			"item": [
-				{
-					"name": "Search for artist and save variable artistId",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const resultData = pm.response.json().results;\r",
-									"const queryString = pm.variables.replaceIn(pm.request.url.query.toString());\r",
-									"const queryName = queryString.slice(52, -8);\r",
-									"\r",
-									"if (resultData.length == 0) {\r",
-									"    postman.setNextRequest(\"Search for artist and save variable artistId\");\r",
-									"} else {\r",
-									"    /* Set iTunes Artist ID variable */\r",
-									"    pm.globals.set(\"artistID\", resultData[0].artistId);\r",
-									"    pm.globals.set(\"queryName\", queryName);\r",
-									"\r",
-									"    pm.test(\"Country is SWE\", () => {\r",
-									"        pm.expect(resultData[0].country).to.eql(\"SWE\");\r",
-									"    });\r",
-									"    pm.test(\"Kind is song\", () => {\r",
-									"        pm.expect(resultData[0].kind).to.eql(\"song\");\r",
-									"    });\r",
-									"    pm.test(\"artistName include search term\", () => { //TODO: a bit flaky\r",
-									"        pm.expect(resultData[0].artistName.toLowerCase()).to.include(queryName.toLowerCase());\r",
-									"    });\r",
-									"}   "
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLSearch}}?country=SE&entity=song&attribute=allArtistTerm&term={{$randomFirstName}}&limit=1",
-							"host": [
-								"{{baseURLSearch}}"
-							],
-							"query": [
-								{
-									"key": "country",
-									"value": "SE"
-								},
-								{
-									"key": "entity",
-									"value": "song"
-								},
-								{
-									"key": "attribute",
-									"value": "allArtistTerm"
-								},
-								{
-									"key": "term",
-									"value": "{{$randomFirstName}}"
-								},
-								{
-									"key": "limit",
-									"value": "1"
-								},
-								{
-									"key": "term",
-									"value": "Anna",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Lookup iTunes Artist ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const resultData = pm.response.json().results[0];\r",
-									"const artistID = pm.globals.get(\"artistID\");\r",
-									"\r",
-									"pm.test(\"Correct artist ID is returned\", () => {\r",
-									"  pm.expect(resultData.artistId).to.eql(artistID);\r",
-									"});\r",
-									"pm.test(\"WrapperType is artist\", () => {\r",
-									"  pm.expect(resultData.wrapperType).to.eql(\"artist\");\r",
-									"});\r",
-									"\r",
-									"/* Set AMG Artist ID variable */\r",
-									"pm.globals.set(\"amgID\", resultData.amgArtistId);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLLookup}}?id={{artistID}}",
-							"host": [
-								"{{baseURLLookup}}"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "{{artistID}}"
-								},
-								{
-									"key": "entity",
-									"value": "album",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "5",
-									"disabled": true
-								},
-								{
-									"key": "entity",
-									"value": "song",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "recent",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Lookup AMG Artist ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const resultData = pm.response.json().results[0];\r",
-									"const amgID = pm.globals.get(\"amgID\");\r",
-									"\r",
-									"pm.test(\"Correct AMG artist ID is returned\", () => {\r",
-									"  pm.expect(resultData.amgArtistId).to.eql(amgID);\r",
-									"});\r",
-									"pm.test(\"WrapperType is artist\", () => {\r",
-									"  pm.expect(resultData.wrapperType).to.eql(\"artist\");\r",
-									"});\r",
-									"\r",
-									"/* Set AMG Artist ID variable */\r",
-									"//pm.globals.set(\"amgID\", resultData.amgArtistId);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLLookup}}?amgArtistId={{amgID}}",
-							"host": [
-								"{{baseURLLookup}}"
-							],
-							"query": [
-								{
-									"key": "amgArtistId",
-									"value": "{{amgID}}"
-								},
-								{
-									"key": "entity",
-									"value": "album",
-									"disabled": true
-								},
-								{
-									"key": "limit",
-									"value": "5",
-									"disabled": true
-								},
-								{
-									"key": "entity",
-									"value": "song",
-									"disabled": true
-								},
-								{
-									"key": "sort",
-									"value": "recent",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"Response datatype is object\", () => {",
-							"    pm.expect(jsonData).to.be.an(\"object\");",
-							"});"
-						]
-					}
 				}
 			]
 		}
