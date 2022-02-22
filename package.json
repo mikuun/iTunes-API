@@ -7,6 +7,7 @@
     "newman-tests": "newman run iTunesAPI.postman_collection.json --reporters cli,junit,htmlextra --reporter-junit-export 'report/newmanreport.xml'"
   },
   "dependencies": {
-    "newman": "^5.3.1"
+    "newman": "^5.3.1",
+    "newman-reporter-htmlextra": "^1.22.7"
   }
 }
