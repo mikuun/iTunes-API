@@ -6,10 +6,131 @@
 	},
 	"item": [
 		{
+			"name": "Smoke test",
+			"item": [
+				{
+					"name": "Search",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"Default resultCount is greater than 0\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"});\r",
+									"pm.test(\"Default resultCount is less than 51\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(51);\r",
+									"});\r",
+									"pm.test(\"Results length is greater than 0\", () => {\r",
+									"    pm.expect(resultData.length).to.greaterThan(0);\r",
+									"});\r",
+									"pm.test(\"Results length is less than 51\", () => {\r",
+									"    pm.expect(resultData.length).to.lessThan(51);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?term={{$randomColor}}",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "term",
+									"value": "{{$randomColor}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"Default resultCount is 1\", () => {\r",
+									"    pm.expect(jsonData.resultCount).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"Results length is 1\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"artistID is same as request parameter\", () => {\r",
+									"    pm.expect(resultData[0].artistId).to.eql(372976);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?id=372976",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "372976",
+									"description": "ID for ABBA"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
 			"name": "Search/lookup sequence",
 			"item": [
 				{
-					"name": "Search for artist and save variable artistId",
+					"name": "Search for artist and save variable artistID",
 					"event": [
 						{
 							"listen": "test",
@@ -21,10 +142,9 @@
 									"const queryName = queryString.slice(45, -10);\r",
 									"\r",
 									"if (resultData.length < 200) {\r",
-									"    postman.setNextRequest(\"Search for artist and save variable artistId DEV\");\r",
+									"    postman.setNextRequest(\"Search for artist and save variable artistID\");\r",
 									"} else {\r",
 									"    const amgFound = resultData.filter((result) => result.amgArtistId);\r",
-									"    console.log(amgFound);\r",
 									"\r",
 									"    pm.test(\"Limit 250 returns resultCount: 200\", () => {\r",
 									"        pm.expect(jsonData[\"resultCount\"]).to.eql(200);\r",
@@ -106,7 +226,6 @@
 									"pm.test(\"Limit 5 returns results with length 6 (5 songs + 1 artist)\", () => {\r",
 									"    pm.expect(resultData.length).to.eql(6);\r",
 									"});\r",
-									"\r",
 									"pm.test(\"Correct artist ID is returned\", () => {\r",
 									"  pm.expect(resultData[0].artistId).to.eql(artistID);\r",
 									"});\r",
@@ -116,9 +235,18 @@
 									"pm.test(\"WrapperType for second object is track\", () => {\r",
 									"  pm.expect(resultData[1].wrapperType).to.eql(\"track\");\r",
 									"});\r",
+									"pm.test(\"Country is SWE\", () => {\r",
+									"    pm.expect(resultData[1].country).to.eql(\"SWE\");\r",
+									"});\r",
+									"pm.test(\"Currency is SEK\", () => {\r",
+									"    pm.expect(resultData[3].currency).to.eql(\"SEK\");\r",
+									"});\r",
+									"pm.test(\"Kind is song\", () => {\r",
+									"        pm.expect(resultData[2].kind).to.eql(\"song\");\r",
+									"    });\r",
 									"\r",
 									"if (amgFound.length == 0) {\r",
-									"    postman.setNextRequest(\"Search for artist and save variable artistId\");\r",
+									"    postman.setNextRequest(\"Search for artist and save variable artistID\");\r",
 									"} else {\r",
 									"    /* Set AMG Artist ID variable */\r",
 									"    pm.globals.set(\"amgID\", resultData[0].amgArtistId);\r",
@@ -132,7 +260,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLLookup}}?id={{artistID}}&entity=song&limit=5&sort=top",
+							"raw": "{{baseURLLookup}}?id={{artistID}}&entity=song&limit=5&sort=top&country=SE",
 							"host": [
 								"{{baseURLLookup}}"
 							],
@@ -152,6 +280,10 @@
 								{
 									"key": "sort",
 									"value": "top"
+								},
+								{
+									"key": "country",
+									"value": "SE"
 								}
 							]
 						}
@@ -165,15 +297,35 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"const resultData = pm.response.json().results[0];\r",
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
 									"const amgID = pm.globals.get(\"amgID\");\r",
 									"\r",
-									"pm.test(\"Correct AMG artist ID is returned\", () => {\r",
-									"  pm.expect(resultData.amgArtistId).to.eql(amgID);\r",
+									"pm.test(\"Limit 1 returns resultCount: 2 (1 album + 1 artist)\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.eql(2);\r",
 									"});\r",
-									"pm.test(\"WrapperType is artist\", () => {\r",
-									"  pm.expect(resultData.wrapperType).to.eql(\"artist\");\r",
-									"});"
+									"pm.test(\"Limit 1 returns results with length 2 (1 album + 1 artist)\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(2);\r",
+									"});\r",
+									"pm.test(\"Correct AMG artist ID is returned\", () => {\r",
+									"  pm.expect(resultData[0].amgArtistId).to.eql(amgID);\r",
+									"});\r",
+									"pm.test(\"WrapperType for first object is artist\", () => {\r",
+									"  pm.expect(resultData[0].wrapperType).to.eql(\"artist\");\r",
+									"});\r",
+									"pm.test(\"WrapperType for second object is collection\", () => {\r",
+									"  pm.expect(resultData[1].wrapperType).to.eql(\"collection\");\r",
+									"});\r",
+									"pm.test(\"collectionType is Album\", () => {\r",
+									"    pm.expect(resultData[1].collectionType).to.eql(\"Album\");\r",
+									"});\r",
+									"pm.test(\"Country is USA\", () => {\r",
+									"    pm.expect(resultData[1].country).to.eql(\"USA\");\r",
+									"});\r",
+									"pm.test(\"Currency is USD\", () => {\r",
+									"    pm.expect(resultData[1].currency).to.eql(\"USD\");\r",
+									"});\r",
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -183,7 +335,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLLookup}}?amgArtistId={{amgID}}&entity=album&limit=5",
+							"raw": "{{baseURLLookup}}?amgArtistId={{amgID}}&entity=album&limit=1&sort=recent",
 							"host": [
 								"{{baseURLLookup}}"
 							],
@@ -198,17 +350,11 @@
 								},
 								{
 									"key": "limit",
-									"value": "5"
-								},
-								{
-									"key": "entity",
-									"value": "song",
-									"disabled": true
+									"value": "1"
 								},
 								{
 									"key": "sort",
-									"value": "recent",
-									"disabled": true
+									"value": "recent"
 								}
 							]
 						}
@@ -560,6 +706,48 @@
 								{
 									"key": "term",
 									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup: bad request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?id=a",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "a"
 								}
 							]
 						}
