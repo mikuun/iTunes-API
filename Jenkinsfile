@@ -18,6 +18,7 @@ pipeline {
         stage('Run Postman-collection') {
             steps {
                 sh 'npm install'
+                sh 'npm run newman-smoke-tests'
                 sh 'npm run newman-tests'
             }
         }
