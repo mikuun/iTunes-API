@@ -21,5 +21,8 @@ pipeline {
                 sh 'npm run newman-tests'
             }
         }
+        stage('Build') {
+            echo "This is where the build would happen.."
+        }
     }
 }
