@@ -15,10 +15,14 @@ pipeline {
                 url:'https://github.com/mikuun/iTunes-API'
             }
         }
-        stage('Run Postman-collection') {
+        stage('Run Smoke tests') {
             steps {
                 sh 'npm install'
                 sh 'npm run newman-smoke-tests'
+            }
+        }
+        stage('Run full Postman collection') {
+            steps {
                 sh 'npm run newman-tests'
             }
         }
