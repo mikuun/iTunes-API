@@ -11,7 +11,7 @@ pipeline {
         }
         stage('Checkout code from GitHub') {
             steps {
-                git branch: 'main',
+                git branch: 'dev',
                 url:'https://github.com/mikuun/iTunes-API'
             }
         }
