@@ -22,7 +22,9 @@ pipeline {
             }
         }
         stage('Build') {
-            echo "This is where the build would happen.."
+            steps {
+                echo "This is where the build would happen.."
+            }
         }
     }
 }
