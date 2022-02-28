@@ -1,0 +1,52 @@
+[
+    {
+        "wrapperType": "artist",
+        "artistType": "Artist",
+        "artistName": "Lil Nas X",
+        "artistLinkUrl": "https://music.apple.com/se/artist/lil-nas-x/1400730578?uo=4",
+        "artistId": 1400730578,
+        "amgArtistId": 3526930,
+        "primaryGenreName": "Hiphop/Rap",
+        "primaryGenreId": 18
+    },
+    {
+        "wrapperType": "artist",
+        "artistType": "Artist",
+        "artistName": "The Beatles",
+        "artistLinkUrl": "https://music.apple.com/se/artist/the-beatles/136975?uo=4",
+        "artistId": 136975,
+        "amgArtistId": 3644,
+        "primaryGenreName": "Rock",
+        "primaryGenreId": 21
+    },
+    {
+        "wrapperType": "artist",
+        "artistType": "Artist",
+        "artistName": "ABBA",
+        "artistLinkUrl": "https://music.apple.com/se/artist/abba/372976?uo=4",
+        "artistId": 372976,
+        "amgArtistId": 3492,
+        "primaryGenreName": "Pop",
+        "primaryGenreId": 14
+    },
+    {
+        "wrapperType": "artist",
+        "artistType": "Artist",
+        "artistName": "Lady Gaga",
+        "artistLinkUrl": "https://music.apple.com/se/artist/lady-gaga/277293880?uo=4",
+        "artistId": 277293880,
+        "amgArtistId": 1055684,
+        "primaryGenreName": "Pop",
+        "primaryGenreId": 14
+    },
+    {
+        "wrapperType": "artist",
+        "artistType": "Artist",
+        "artistName": "The Tallest Man On Earth",
+        "artistLinkUrl": "https://music.apple.com/se/artist/the-tallest-man-on-earth/206564311?uo=4",
+        "artistId": 206564311,
+        "amgArtistId": 865422,
+        "primaryGenreName": "Alternativt",
+        "primaryGenreId": 20
+    }
+    ]
