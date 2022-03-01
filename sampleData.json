@@ -3,7 +3,10 @@
         "attribute": "artistTerm",
         "entity": "song",
         "term": "The Beatles",
-        "limit": 250,
+        "limit": 200,
+        "badLimit": 250,
+        "badId": "NaN",
+        "country": "",
         "wrapperType": "artist",
         "artistType": "Artist",
         "artistName": "The Beatles",
@@ -18,6 +21,9 @@
         "entity": "audiobook",
         "term": "Of Mice and Men",
         "limit": 1,
+        "badLimit": "-",
+        "badId": "-",
+        "country": "SE",
         "wrapperType": "audiobook",
         "artistId": 299088305,
         "collectionId": 1418818018,
@@ -31,20 +37,24 @@
         "collectionPrice": 6.99,
         "collectionExplicitness": "notExplicit",
         "trackCount": 1,
-        "country": "USA",
         "currency": "USD",
         "releaseDate": "2011-04-13T07:00:00Z",
         "primaryGenreName": "Fiction",
         "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/fe/37/6f/fe376f06-a325-8863-13be-a80af42a777f/mzaf_1186412766039708653.std.aac.p.m4a",
-        "description": "Celebrating its 75th anniversary, John Steinbeck’s <i>Of Mice and Men</i> remains one of America's most widely read and beloved novels. Here is Steinbeck’s dramatic adaptation of his novel-as-play, which received the New York Drama Critics’ Circle Award for Best Play in 1937-1938 and has featured a number of actors who have played the iconic roles of George and Lennie on stage and film, including James Earl Jones, John Malkovich and Gary Sinise.From the Nobel Prize-winning author of <i>The Grapes of Wrath</i> and <i>East of Eden</i>, this classic story of an unlikely pair, two migrant workers in California during the Great Depression who grasp for their American Dream, profoundly touches readers and audiences alike. George and his simple-minded friend Lenny dream, as drifters will, of a place to call their own—a couple of acres and a few pigs, chickens, and rabbits back in Hill Country where land is cheap. But after they come to work on a ranch in the fertile Salinas Valley of California, their hopes, like “the best laid schemes o’mice an’ men,” begin to go awry.<br /><i>Of Mice and Men</i> also represents an experiment in form, as Steinbeck described his work, “a kind of playable novel, written in novel form but so scened and set that it can be played as it stands.” A rarity in American letters, it achieved remarkable success as a novel, a Broadway play, and three acclaimed films."
+        "description": "Celebrating its 75th anniversary, John Steinbeck’s <i>Of Mice and Men</i> remains one of America's most widely read and beloved novels. Here is Steinbeck’s dramatic adaptation of his novel-as-play, which received the New York Drama Critics’ Circle Award for Best Play in 1937-1938 and has featured a number of actors who have played the iconic roles of George and Lennie on stage and film, including James Earl Jones, John Malkovich and Gary Sinise.From the Nobel Prize-winning author of <i>The Grapes of Wrath</i> and <i>East of Eden</i>, this classic story of an unlikely pair, two migrant workers in California during the Great Depression who grasp for their American Dream, profoundly touches readers and audiences alike. George and his simple-minded friend Lenny dream, as drifters will, of a place to call their own—a couple of acres and a few pigs, chickens, and rabbits back in Hill Country where land is cheap. But after they come to work on a ranch in the fertile Salinas Valley of California, their hopes, like “the best laid schemes o’mice an’ men,” begin to go awry.<br /><i>Of Mice and Men</i> also represents an experiment in form, as Steinbeck described his work, “a kind of playable novel, written in novel form but so scened and set that it can be played as it stands.” A rarity in American letters, it achieved remarkable success as a novel, a Broadway play, and three acclaimed films.",
+        "amgArtistId": 3296287
     },
     {
         "attribute": "authorTerm",
         "entity": "ebook",
         "term": "Donna Tartt",
-        "limit": "NaN",
+        "limit": 10,
+        "badLimit": "NaN",
+        "badId": 12345678901234567890,
+        "country": "JP",
         "artistId": 2065736,
         "artistName": "Donna Tartt",
-        "kind": "ebook"
+        "kind": "ebook",
+        "amgArtistId": 372976 
     }
-    ]
+]
