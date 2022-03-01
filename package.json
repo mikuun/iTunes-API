@@ -4,8 +4,8 @@
   "description": "",
   "author": "",
   "scripts": {
-    "newman-smoke-tests": "newman run iTunesAPI.postman_collection.json --folder 'Smoke test' --bail --reporters cli,junit,htmlextra --reporter-junit-export 'report/newmanreport.xml' --reporter-htmlextra-export 'report/report.html' --reporter-htmlextra-browserTitle 'Test summary' --reporter-htmlextra-title 'iTunes API test dashboard' --reporter-htmlextra-titleSize 4 --reporter-htmlextra-logs --reporter-htmlextra-omitHeaders",
-    "newman-tests": "newman run iTunesAPI.postman_collection.json --reporters cli,junit,htmlextra --reporter-junit-export 'report/newmanreport.xml' --reporter-htmlextra-export 'report/report.html' --reporter-htmlextra-browserTitle 'Test summary' --reporter-htmlextra-title 'iTunes API test dashboard' --reporter-htmlextra-titleSize 4 --reporter-htmlextra-logs --reporter-htmlextra-omitHeaders"
+    "newman-smoke-tests": "newman run iTunesAPI.postman_collection.json --folder 'Smoke test' -d sampleData.json --bail --reporters cli,junit,htmlextra --reporter-junit-export 'report/newmanreport.xml' --reporter-htmlextra-export 'report/report.html' --reporter-htmlextra-browserTitle 'Test summary' --reporter-htmlextra-title 'iTunes API test dashboard' --reporter-htmlextra-titleSize 4 --reporter-htmlextra-logs --reporter-htmlextra-omitHeaders",
+    "newman-tests": "newman run iTunesAPI.postman_collection.json -d sampleData.json --reporters cli,junit,htmlextra --reporter-junit-export 'report/newmanreport.xml' --reporter-htmlextra-export 'report/report.html' --reporter-htmlextra-browserTitle 'Test summary' --reporter-htmlextra-title 'iTunes API test dashboard' --reporter-htmlextra-titleSize 4 --reporter-htmlextra-logs --reporter-htmlextra-omitHeaders"
   },
   "dependencies": {
     "newman": "^5.3.1",
