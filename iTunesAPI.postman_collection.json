@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "a13ab280-1a4e-4d87-82d9-a28212867894",
-		"name": "iTunes API",
+		"_postman_id": "b41d7e2c-b5f6-421d-a881-b1ccc99f035d",
+		"name": "DEV",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -9,7 +9,7 @@
 			"name": "Smoke test",
 			"item": [
 				{
-					"name": "Search",
+					"name": "Search: valid request",
 					"event": [
 						{
 							"listen": "test",
@@ -17,6 +17,10 @@
 								"exec": [
 									"const jsonData = pm.response.json();\r",
 									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
 									"\r",
 									"pm.test(\"Default resultCount is greater than 0\", () => {\r",
 									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
@@ -39,14 +43,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLSearch}}?term={{$randomColor}}",
+							"raw": "{{baseURLSearch}}?term={{term}}",
 							"host": [
 								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
 									"key": "term",
-									"value": "{{$randomColor}}"
+									"value": "{{term}}"
 								}
 							]
 						}
@@ -54,7 +58,7 @@
 					"response": []
 				},
 				{
-					"name": "Lookup",
+					"name": "Lookup: valid request",
 					"event": [
 						{
 							"listen": "test",
@@ -63,6 +67,10 @@
 									"const jsonData = pm.response.json();\r",
 									"const resultData = pm.response.json().results;\r",
 									"\r",
+									"pm.test(\"Status code is 200\", () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
 									"pm.test(\"Default resultCount is 1\", () => {\r",
 									"    pm.expect(jsonData.resultCount).to.eql(1);\r",
 									"});\r",
@@ -70,7 +78,7 @@
 									"    pm.expect(resultData.length).to.eql(1);\r",
 									"});\r",
 									"pm.test(\"artistID is same as request parameter\", () => {\r",
-									"    pm.expect(resultData[0].artistId).to.eql(372976);\r",
+									"    pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -81,15 +89,66 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLLookup}}?id=372976",
+							"raw": "{{baseURLLookup}}?id={{artistId}}",
 							"host": [
 								"{{baseURLLookup}}"
 							],
 							"query": [
 								{
 									"key": "id",
-									"value": "372976",
+									"value": "{{artistId}}",
 									"description": "ID for ABBA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup: bad request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 400\", () => {\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response includes errorMessage\", () => {\r",
+									"    pm.expect(pm.response.text()).to.include(\"errorMessage\");\r",
+									"});\r",
+									"pm.test(\"errorMessage is as expected\", () => {\r",
+									"    pm.expect(jsonData[\"errorMessage\"]).to.eql(\"Invalid value(s) for key(s): [itunesId]\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?id={{badId}}",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{badId}}"
 								}
 							]
 						}
@@ -114,12 +173,11 @@
 						"exec": [
 							"const jsonData = pm.response.json();",
 							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
 							"pm.test(\"Response datatype is object\", () => {",
 							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});",
+							"pm.test(\"Response time is less than 1500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
 							"});"
 						]
 					}
@@ -127,43 +185,24 @@
 			]
 		},
 		{
-			"name": "Search/lookup sequence",
+			"name": "Limits",
 			"item": [
 				{
-					"name": "Search for artist and save variable artistID",
+					"name": "Limits: within range",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
 									"const jsonData = pm.response.json();\r",
-									"const resultData = pm.response.json().results;\r",
-									"const queryString = pm.variables.replaceIn(pm.request.url.query.toString());\r",
-									"const queryName = queryString.slice(45, -10);\r",
+									"const resultData = jsonData.results;\r",
 									"\r",
-									"if (resultData.length < 200) {\r",
-									"    postman.setNextRequest(\"Search for artist and save variable artistID\");\r",
-									"} else {\r",
-									"    const amgFound = resultData.filter((result) => result.amgArtistId);\r",
-									"\r",
-									"    pm.test(\"Limit 250 returns resultCount: 200\", () => {\r",
-									"        pm.expect(jsonData[\"resultCount\"]).to.eql(200);\r",
-									"    });\r",
-									"    pm.test(\"Limit 250 returns results with length 200\", () => {\r",
-									"        pm.expect(resultData.length).to.eql(200);\r",
-									"    });\r",
-									"    pm.test(\"wrapperType is artist\", () => {\r",
-									"        pm.expect(resultData[0].wrapperType).to.eql(\"artist\");\r",
-									"    });\r",
-									"    pm.test(\"artistName include search term\", () => { \r",
-									"        //TODO: a bit flaky\r",
-									"        pm.expect(resultData[0].artistName.toLowerCase()).to.include(queryName.toLowerCase());\r",
-									"    });\r",
-									"\r",
-									"    /* Set iTunes Artist ID variable */\r",
-									"    pm.globals.set(\"artistID\", amgFound[0].artistId);\r",
-									"    pm.globals.set(\"queryName\", queryName);\r",
-									"}   "
+									"pm.test(\"resultCount is consistent with limit\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.eql(pm.iterationData.get(\"limit\"));\r",
+									"});\r",
+									"pm.test(\"Length is consistent with limit\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(pm.iterationData.get(\"limit\"));\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -182,26 +221,343 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLSearch}}?entity=musicArtist&attribute=artistTerm&term={{$randomFirstName}}&limit=250",
+							"raw": "{{baseURLSearch}}?limit={{limit}}&term={{term}}",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "{{country}}",
+									"disabled": true
+								},
+								{
+									"key": "entity",
+									"value": "{{entity}}",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "{{limit}}"
+								},
+								{
+									"key": "term",
+									"value": "{{term}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Limits: out of range",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = jsonData.results;\r",
+									"\r",
+									"pm.test(\"Out of range limit returns resultCount over 0\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"});\r",
+									"pm.test(\"Out of range limit returns resultCount less than 201\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(201);\r",
+									"});\r",
+									"pm.test(\"Out of range limit returns results with length over 0\", () => {\r",
+									"    pm.expect(resultData.length).to.greaterThan(0);\r",
+									"});\r",
+									"pm.test(\"Out of range limit returns results with length less than 201\", () => {\r",
+									"    pm.expect(resultData.length).to.lessThan(201);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{badLimit}}&term={{term}}",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "country",
+									"value": "{{country}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entity}}"
+								},
+								{
+									"key": "limit",
+									"value": "{{badLimit}}"
+								},
+								{
+									"key": "term",
+									"value": "{{term}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 1500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Search & lookup with datafile",
+			"item": [
+				{
+					"name": "Search datafile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"Default resultCount is greater than 0\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"});\r",
+									"pm.test(\"Default resultCount is less than 51\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(51);\r",
+									"});\r",
+									"pm.test(\"Results length is greater than 0\", () => {\r",
+									"    pm.expect(resultData.length).to.greaterThan(0);\r",
+									"});\r",
+									"pm.test(\"Results length is less than 51\", () => {\r",
+									"    pm.expect(resultData.length).to.lessThan(51);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body contains search term\", () => {\r",
+									"    pm.expect(resultData[0].artistName).to.include(pm.iterationData.get(\"artistName\"));\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?term={{term}}&entity={{entity}}&attribute={{attribute}}",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "term",
+									"value": "{{term}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entity}}"
+								},
+								{
+									"key": "attribute",
+									"value": "{{attribute}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lookup datafile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"Default resultCount is 1\", () => {\r",
+									"    pm.expect(jsonData.resultCount).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"Results length is 1\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"artistID is same as request parameter\", () => {\r",
+									"    pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLLookup}}?id={{artistId}}",
+							"host": [
+								"{{baseURLLookup}}"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{artistId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});",
+							"pm.test(\"Response time is less than 1500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Search/lookup sequence",
+			"item": [
+				{
+					"name": "Search with more parameters",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response contains entity\", () => {\r",
+									"    pm.expect(pm.response.text()).to.include(pm.iterationData.get(\"entity\"));\r",
+									"});\r",
+									"pm.test(\"Response contains search term\", () => {\r",
+									"    pm.expect(pm.response.text()).to.include(pm.iterationData.get(\"term\"));\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?entity={{entity}}&attribute={{attribute}}&term={{term}}",
 							"host": [
 								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
 									"key": "entity",
-									"value": "musicArtist"
+									"value": "{{entity}}"
 								},
 								{
 									"key": "attribute",
-									"value": "artistTerm"
+									"value": "{{attribute}}"
 								},
 								{
 									"key": "term",
-									"value": "{{$randomFirstName}}"
+									"value": "{{term}}"
 								},
 								{
-									"key": "limit",
-									"value": "250"
+									"key": "term",
+									"value": "donna+tartt",
+									"disabled": true
+								},
+								{
+									"key": "attribute",
+									"value": "authorTerm",
+									"disabled": true
+								},
+								{
+									"key": "entity",
+									"value": "ebook",
+									"disabled": true
 								}
 							]
 						}
@@ -377,382 +733,19 @@
 					"script": {
 						"type": "text/javascript",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
 							"    pm.response.to.have.status(200);",
 							"});",
-							"",
-							"const jsonData = pm.response.json();",
 							"pm.test(\"Response datatype is object\", () => {",
 							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});",
+							"pm.test(\"Response time is less than 1500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
 							"});"
 						]
 					}
-				}
-			]
-		},
-		{
-			"name": "Limits",
-			"item": [
-				{
-					"name": "Verify limits: Minimum",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const jsonData = pm.response.json();\r",
-									"const resultData = jsonData.results;\r",
-									"\r",
-									"\r",
-									"pm.test(\"Limit=1 returns resultCount: 1\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.eql(1);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Limit=1 returns results with length 1\", () => {\r",
-									"    pm.expect(resultData.length).to.eql(1);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.variables.set(\"limit\", 1);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
-							"host": [
-								"{{baseURLSearch}}"
-							],
-							"query": [
-								{
-									"key": "country",
-									"value": "{{country}}"
-								},
-								{
-									"key": "entity",
-									"value": "{{entity}}"
-								},
-								{
-									"key": "limit",
-									"value": "{{limit}}"
-								},
-								{
-									"key": "term",
-									"value": "{{searchTerm}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Verify limits: Maximum",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const jsonData = pm.response.json();\r",
-									"const resultData = jsonData.results;\r",
-									"\r",
-									"pm.test(\"Limit=200 returns resultCount: 200\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.eql(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Limit=200 returns results with length 200\", () => {\r",
-									"    pm.expect(resultData.length).to.eql(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.variables.set(\"limit\", 200);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
-							"host": [
-								"{{baseURLSearch}}"
-							],
-							"query": [
-								{
-									"key": "country",
-									"value": "{{country}}"
-								},
-								{
-									"key": "entity",
-									"value": "{{entity}}"
-								},
-								{
-									"key": "limit",
-									"value": "{{limit}}"
-								},
-								{
-									"key": "term",
-									"value": "{{searchTerm}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Verify limits: Over range",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const jsonData = pm.response.json();\r",
-									"const resultData = jsonData.results;\r",
-									"\r",
-									"pm.test(\"Limit=250 returns resultCount: 200\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.eql(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Limit=250 returns results with length 200\", () => {\r",
-									"    pm.expect(resultData.length).to.eql(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.variables.set(\"limit\", 250);"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
-							"host": [
-								"{{baseURLSearch}}"
-							],
-							"query": [
-								{
-									"key": "country",
-									"value": "{{country}}"
-								},
-								{
-									"key": "entity",
-									"value": "{{entity}}"
-								},
-								{
-									"key": "limit",
-									"value": "{{limit}}"
-								},
-								{
-									"key": "term",
-									"value": "{{searchTerm}}"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Verify limits: Not a number",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const jsonData = pm.response.json();\r",
-									"const resultData = jsonData.results;\r",
-									"\r",
-									"pm.test(\"Limit=NaN returns resultCount: 50\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.eql(50);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Limit=NaN returns results with length 50\", () => {\r",
-									"    pm.expect(resultData.length).to.eql(50);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"pm.variables.set(\"limit\", \"querty\");"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{limit}}&term={{searchTerm}}",
-							"host": [
-								"{{baseURLSearch}}"
-							],
-							"query": [
-								{
-									"key": "country",
-									"value": "{{country}}"
-								},
-								{
-									"key": "entity",
-									"value": "{{entity}}"
-								},
-								{
-									"key": "limit",
-									"value": "{{limit}}"
-								},
-								{
-									"key": "term",
-									"value": "{{searchTerm}}"
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"const jsonData = pm.response.json();",
-							"pm.test(\"Response datatype is object\", () => {",
-							"    pm.expect(jsonData).to.be.an(\"object\");",
-							"});"
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "Status codes",
-			"item": [
-				{
-					"name": "Status codes: empty request",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLSearch}}?term=",
-							"host": [
-								"{{baseURLSearch}}"
-							],
-							"query": [
-								{
-									"key": "term",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Lookup: bad request",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 400\", function () {\r",
-									"    pm.response.to.have.status(400);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLLookup}}?id=a",
-							"host": [
-								"{{baseURLLookup}}"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "a"
-								}
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		}
@@ -779,10 +772,6 @@
 	],
 	"variable": [
 		{
-			"key": "country",
-			"value": "SE"
-		},
-		{
 			"key": "baseURLSearch",
 			"value": "https://itunes.apple.com/search"
 		},
@@ -790,22 +779,6 @@
 			"key": "baseURLLookup",
 			"value": "https://itunes.apple.com/lookup",
 			"type": "string"
-		},
-		{
-			"key": "entity",
-			"value": "musicTrack"
-		},
-		{
-			"key": "searchTerm",
-			"value": "abba"
-		},
-		{
-			"key": "IDValid",
-			"value": "909253"
-		},
-		{
-			"key": "ISBNValid",
-			"value": "9780316069359"
 		}
 	]
 }
