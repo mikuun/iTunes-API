@@ -22,6 +22,10 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
+									"pm.test(\"Response includes search term\", () => {\r",
+									"    pm.expect(pm.response.text()).to.include(pm.iterationData.get(\"termSmoke\"));\r",
+									"});\r",
+									"\r",
 									"pm.test(\"Default resultCount is greater than 0\", () => {\r",
 									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
 									"});\r",
@@ -43,14 +47,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLSearch}}?term={{term}}",
+							"raw": "{{baseURLSearch}}?term={{termSmoke}}",
 							"host": [
 								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
 									"key": "term",
-									"value": "{{term}}"
+									"value": "{{termSmoke}}"
 								}
 							]
 						}
@@ -70,15 +74,14 @@
 									"pm.test(\"Status code is 200\", () => {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
-									"\r",
+									"pm.test(\"artistID is same as request parameter\", () => {\r",
+									"    pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
+									"});\r",
 									"pm.test(\"Default resultCount is 1\", () => {\r",
 									"    pm.expect(jsonData.resultCount).to.eql(1);\r",
 									"});\r",
 									"pm.test(\"Results length is 1\", () => {\r",
 									"    pm.expect(resultData.length).to.eql(1);\r",
-									"});\r",
-									"pm.test(\"artistID is same as request parameter\", () => {\r",
-									"    pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -96,8 +99,7 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "{{artistId}}",
-									"description": "ID for ABBA"
+									"value": "{{artistId}}"
 								}
 							]
 						}
@@ -116,7 +118,6 @@
 									"pm.test(\"Status code is 400\", () => {\r",
 									"    pm.response.to.have.status(400);\r",
 									"});\r",
-									"\r",
 									"pm.test(\"Response includes errorMessage\", () => {\r",
 									"    pm.expect(pm.response.text()).to.include(\"errorMessage\");\r",
 									"});\r",
@@ -141,14 +142,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLLookup}}?id={{badId}}",
+							"raw": "{{baseURLLookup}}?id={{badArtistId}}",
 							"host": [
 								"{{baseURLLookup}}"
 							],
 							"query": [
 								{
 									"key": "id",
-									"value": "{{badId}}"
+									"value": "{{badArtistId}}"
 								}
 							]
 						}
@@ -221,7 +222,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLSearch}}?limit={{limit}}&term={{term}}",
+							"raw": "{{baseURLSearch}}?limit={{limit}}&term={{termSmoke}}",
 							"host": [
 								"{{baseURLSearch}}"
 							],
@@ -242,7 +243,7 @@
 								},
 								{
 									"key": "term",
-									"value": "{{term}}"
+									"value": "{{termSmoke}}"
 								}
 							]
 						}
@@ -289,7 +290,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLSearch}}?country={{country}}&entity={{entity}}&limit={{badLimit}}&term={{term}}",
+							"raw": "{{baseURLSearch}}?country={{country}}&limit={{badLimit}}&term={{termSmoke}}",
 							"host": [
 								"{{baseURLSearch}}"
 							],
@@ -300,7 +301,8 @@
 								},
 								{
 									"key": "entity",
-									"value": "{{entity}}"
+									"value": "{{entity}}",
+									"disabled": true
 								},
 								{
 									"key": "limit",
@@ -308,7 +310,7 @@
 								},
 								{
 									"key": "term",
-									"value": "{{term}}"
+									"value": "{{termSmoke}}"
 								}
 							]
 						}
@@ -350,10 +352,10 @@
 			]
 		},
 		{
-			"name": "Search & lookup with datafile",
+			"name": "Search",
 			"item": [
 				{
-					"name": "Search datafile",
+					"name": "Search: audiobook",
 					"event": [
 						{
 							"listen": "test",
@@ -362,23 +364,19 @@
 									"const jsonData = pm.response.json();\r",
 									"const resultData = pm.response.json().results;\r",
 									"\r",
-									"pm.test(\"Default resultCount is greater than 0\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"pm.test(\"artistName contains search term\", () => {\r",
+									"    pm.expect(resultData[0].artistName).to.contain(pm.iterationData.get(\"termAudiobook\"));\r",
 									"});\r",
-									"pm.test(\"Default resultCount is less than 51\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(51);\r",
-									"});\r",
-									"pm.test(\"Results length is greater than 0\", () => {\r",
-									"    pm.expect(resultData.length).to.greaterThan(0);\r",
-									"});\r",
-									"pm.test(\"Results length is less than 51\", () => {\r",
-									"    pm.expect(resultData.length).to.lessThan(51);\r",
+									"pm.test(\"wrapperType is audiobook\", () => {\r",
+									"    pm.expect(resultData[0].wrapperType).to.eql(pm.iterationData.get(\"wrapperTypeAudiobook\"));\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Body contains search term\", () => {\r",
-									"    pm.expect(resultData[0].artistName).to.include(pm.iterationData.get(\"artistName\"));\r",
-									"});\r",
-									""
+									"pm.test(\"Number of results are within limit\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(51);\r",
+									"    pm.expect(resultData.length).to.greaterThan(0);\r",
+									"    pm.expect(resultData.length).to.lessThan(51);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -397,22 +395,26 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLSearch}}?term={{term}}&entity={{entity}}&attribute={{attribute}}",
+							"raw": "{{baseURLSearch}}?media=audiobook&term={{termAudiobook}}&entity={{entityAudiobook}}&attribute={{attributeAudiobook}}",
 							"host": [
 								"{{baseURLSearch}}"
 							],
 							"query": [
 								{
+									"key": "media",
+									"value": "audiobook"
+								},
+								{
 									"key": "term",
-									"value": "{{term}}"
+									"value": "{{termAudiobook}}"
 								},
 								{
 									"key": "entity",
-									"value": "{{entity}}"
+									"value": "{{entityAudiobook}}"
 								},
 								{
 									"key": "attribute",
-									"value": "{{attribute}}"
+									"value": "{{attributeAudiobook}}"
 								}
 							]
 						}
@@ -420,7 +422,248 @@
 					"response": []
 				},
 				{
-					"name": "Lookup datafile",
+					"name": "Search: ebook",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"artistName contains search term\", () => {\r",
+									"    pm.expect(resultData[0].artistName).to.contain(pm.iterationData.get(\"termEbook\"));\r",
+									"});\r",
+									"pm.test(\"kind is ebook\", () => {\r",
+									"    pm.expect(resultData[0].kind).to.eql(pm.iterationData.get(\"kindEbook\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Number of results are within limit\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(51);\r",
+									"    pm.expect(resultData.length).to.greaterThan(0);\r",
+									"    pm.expect(resultData.length).to.lessThan(51);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?media=ebook&term={{termEbook}}&entity={{entityEbook}}",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "media",
+									"value": "ebook"
+								},
+								{
+									"key": "term",
+									"value": "{{termEbook}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entityEbook}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search: music",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"artistName contains search term\", () => {\r",
+									"    pm.expect(resultData[0].artistName).to.contain(pm.iterationData.get(\"termMusic\"));\r",
+									"});\r",
+									"pm.test(\"wrapperType is as expected\", () => {\r",
+									"    pm.expect(resultData[0].wrapperType).to.eql(pm.iterationData.get(\"wrapperTypeMusic\"));\r",
+									"});\r",
+									"\r",
+									"if (pm.iterationData.get(\"entityMusic\") == \"album\") { \r",
+									"    pm.test(\"collectionType is Album \", () => {\r",
+									"        pm.expect(resultData[0].collectionType).to.eql(pm.iterationData.get(\"collectionTypeMusic\"));\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Number of results are within limit\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(51);\r",
+									"    pm.expect(resultData.length).to.greaterThan(0);\r",
+									"    pm.expect(resultData.length).to.lessThan(51);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?media=music&term={{termMusic}}&entity={{entityMusic}}&attribute={{attributeMusic}}",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "media",
+									"value": "music"
+								},
+								{
+									"key": "term",
+									"value": "{{termMusic}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entityMusic}}"
+								},
+								{
+									"key": "attribute",
+									"value": "{{attributeMusic}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search: movie",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"trackName contains search term\", () => {\r",
+									"    pm.expect(resultData[0].trackName).to.contain(pm.iterationData.get(\"termMovie\"));\r",
+									"});\r",
+									"pm.test(\"wrapperType is track\", () => {\r",
+									"    pm.expect(resultData[0].wrapperType).to.eql(pm.iterationData.get(\"wrapperTypeMovie\"));\r",
+									"});\r",
+									"pm.test(\"kind is feature-movie \", () => {\r",
+									"    pm.expect(resultData[0].kind).to.eql(pm.iterationData.get(\"kindMovie\"));\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Number of results are within limit\", () => {\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.greaterThan(0);\r",
+									"    pm.expect(jsonData[\"resultCount\"]).to.lessThan(51);\r",
+									"    pm.expect(resultData.length).to.greaterThan(0);\r",
+									"    pm.expect(resultData.length).to.lessThan(51);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURLSearch}}?media=movie&term={{termMovie}}&entity={{entityMovie}}&attribute={{attributeMovie}}",
+							"host": [
+								"{{baseURLSearch}}"
+							],
+							"query": [
+								{
+									"key": "media",
+									"value": "movie"
+								},
+								{
+									"key": "term",
+									"value": "{{termMovie}}"
+								},
+								{
+									"key": "entity",
+									"value": "{{entityMovie}}"
+								},
+								{
+									"key": "attribute",
+									"value": "{{attributeMovie}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});",
+							"pm.test(\"Response time is less than 1500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
+							"});"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Lookup",
+			"item": [
+				{
+					"name": "Lookup: id",
 					"event": [
 						{
 							"listen": "test",
@@ -460,292 +703,48 @@
 						}
 					},
 					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
 				},
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"const jsonData = pm.response.json();",
-							"",
-							"pm.test(\"Status code is 200\", () => {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"pm.test(\"Response datatype is object\", () => {",
-							"    pm.expect(jsonData).to.be.an(\"object\");",
-							"});",
-							"pm.test(\"Response time is less than 1500ms\", () => {",
-							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
-							"});"
-						]
-					}
-				}
-			]
-		},
-		{
-			"name": "Search/lookup sequence",
-			"item": [
-				{
-					"name": "Search with more parameters",
+					"name": "Lookup: amgArtistId",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Response contains entity\", () => {\r",
-									"    pm.expect(pm.response.text()).to.include(pm.iterationData.get(\"entity\"));\r",
+									"const jsonData = pm.response.json();\r",
+									"const resultData = pm.response.json().results;\r",
+									"\r",
+									"pm.test(\"Default resultCount is 1\", () => {\r",
+									"    pm.expect(jsonData.resultCount).to.eql(1);\r",
 									"});\r",
-									"pm.test(\"Response contains search term\", () => {\r",
-									"    pm.expect(pm.response.text()).to.include(pm.iterationData.get(\"term\"));\r",
+									"pm.test(\"Results length is 1\", () => {\r",
+									"    pm.expect(resultData.length).to.eql(1);\r",
+									"});\r",
+									"pm.test(\"amgArtistID is same as request parameter\", () => {\r",
+									"    pm.expect(resultData[0].amgArtistId).to.eql(pm.iterationData.get(\"amgArtistId\"));\r",
 									"});"
 								],
 								"type": "text/javascript"
 							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
 						}
 					],
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseURLSearch}}?entity={{entity}}&attribute={{attribute}}&term={{term}}",
-							"host": [
-								"{{baseURLSearch}}"
-							],
-							"query": [
-								{
-									"key": "entity",
-									"value": "{{entity}}"
-								},
-								{
-									"key": "attribute",
-									"value": "{{attribute}}"
-								},
-								{
-									"key": "term",
-									"value": "{{term}}"
-								},
-								{
-									"key": "term",
-									"value": "donna+tartt",
-									"disabled": true
-								},
-								{
-									"key": "attribute",
-									"value": "authorTerm",
-									"disabled": true
-								},
-								{
-									"key": "entity",
-									"value": "ebook",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Lookup iTunes Artist ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const jsonData = pm.response.json();\r",
-									"const resultData = pm.response.json().results;\r",
-									"const artistID = pm.globals.get(\"artistID\");\r",
-									"const amgFound = resultData.filter((result) => result.amgArtistId);\r",
-									"\r",
-									"pm.test(\"Limit 5 returns resultCount: 6 (5 songs + 1 artist)\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.eql(6);\r",
-									"});\r",
-									"pm.test(\"Limit 5 returns results with length 6 (5 songs + 1 artist)\", () => {\r",
-									"    pm.expect(resultData.length).to.eql(6);\r",
-									"});\r",
-									"pm.test(\"Correct artist ID is returned\", () => {\r",
-									"  pm.expect(resultData[0].artistId).to.eql(artistID);\r",
-									"});\r",
-									"pm.test(\"WrapperType for first object is artist\", () => {\r",
-									"  pm.expect(resultData[0].wrapperType).to.eql(\"artist\");\r",
-									"});\r",
-									"pm.test(\"WrapperType for second object is track\", () => {\r",
-									"  pm.expect(resultData[1].wrapperType).to.eql(\"track\");\r",
-									"});\r",
-									"pm.test(\"Country is SWE\", () => {\r",
-									"    pm.expect(resultData[1].country).to.eql(\"SWE\");\r",
-									"});\r",
-									"pm.test(\"Currency is SEK\", () => {\r",
-									"    pm.expect(resultData[3].currency).to.eql(\"SEK\");\r",
-									"});\r",
-									"pm.test(\"Kind is song\", () => {\r",
-									"        pm.expect(resultData[2].kind).to.eql(\"song\");\r",
-									"    });\r",
-									"\r",
-									"if (amgFound.length == 0) {\r",
-									"    postman.setNextRequest(\"Search for artist and save variable artistID\");\r",
-									"} else {\r",
-									"    /* Set AMG Artist ID variable */\r",
-									"    pm.globals.set(\"amgID\", resultData[0].amgArtistId);\r",
-									"}"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLLookup}}?id={{artistID}}&entity=song&limit=5&sort=top&country=SE",
-							"host": [
-								"{{baseURLLookup}}"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "{{artistID}}"
-								},
-								{
-									"key": "entity",
-									"value": "song"
-								},
-								{
-									"key": "limit",
-									"value": "5"
-								},
-								{
-									"key": "sort",
-									"value": "top"
-								},
-								{
-									"key": "country",
-									"value": "SE"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Lookup AMG Artist ID",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const jsonData = pm.response.json();\r",
-									"const resultData = pm.response.json().results;\r",
-									"const amgID = pm.globals.get(\"amgID\");\r",
-									"\r",
-									"pm.test(\"Limit 1 returns resultCount: 2 (1 album + 1 artist)\", () => {\r",
-									"    pm.expect(jsonData[\"resultCount\"]).to.eql(2);\r",
-									"});\r",
-									"pm.test(\"Limit 1 returns results with length 2 (1 album + 1 artist)\", () => {\r",
-									"    pm.expect(resultData.length).to.eql(2);\r",
-									"});\r",
-									"pm.test(\"Correct AMG artist ID is returned\", () => {\r",
-									"  pm.expect(resultData[0].amgArtistId).to.eql(amgID);\r",
-									"});\r",
-									"pm.test(\"WrapperType for first object is artist\", () => {\r",
-									"  pm.expect(resultData[0].wrapperType).to.eql(\"artist\");\r",
-									"});\r",
-									"pm.test(\"WrapperType for second object is collection\", () => {\r",
-									"  pm.expect(resultData[1].wrapperType).to.eql(\"collection\");\r",
-									"});\r",
-									"pm.test(\"collectionType is Album\", () => {\r",
-									"    pm.expect(resultData[1].collectionType).to.eql(\"Album\");\r",
-									"});\r",
-									"pm.test(\"Country is USA\", () => {\r",
-									"    pm.expect(resultData[1].country).to.eql(\"USA\");\r",
-									"});\r",
-									"pm.test(\"Currency is USD\", () => {\r",
-									"    pm.expect(resultData[1].currency).to.eql(\"USD\");\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseURLLookup}}?amgArtistId={{amgID}}&entity=album&limit=1&sort=recent",
+							"raw": "{{baseURLLookup}}?amgArtistId={{amgArtistId}}",
 							"host": [
 								"{{baseURLLookup}}"
 							],
 							"query": [
 								{
 									"key": "amgArtistId",
-									"value": "{{amgID}}"
-								},
-								{
-									"key": "entity",
-									"value": "album"
-								},
-								{
-									"key": "limit",
-									"value": "1"
-								},
-								{
-									"key": "sort",
-									"value": "recent"
+									"value": "{{amgArtistId}}"
 								}
 							]
 						}
 					},
 					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"const jsonData = pm.response.json();",
-							"",
-							"pm.test(\"Status code is 200\", () => {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"pm.test(\"Response datatype is object\", () => {",
-							"    pm.expect(jsonData).to.be.an(\"object\");",
-							"});",
-							"pm.test(\"Response time is less than 1500ms\", () => {",
-							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
-							"});"
-						]
-					}
 				}
 			]
 		}
