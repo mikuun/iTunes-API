@@ -1,60 +1,112 @@
 [
     {
-        "attribute": "artistTerm",
-        "entity": "song",
-        "term": "The Beatles",
-        "limit": 200,
-        "badLimit": 250,
-        "badId": "NaN",
+        "termSmoke": "ABBA",
+
+        "explicit": "",
         "country": "",
-        "wrapperType": "artist",
-        "artistType": "Artist",
-        "artistName": "The Beatles",
-        "artistLinkUrl": "https://music.apple.com/us/artist/the-beatles/136975?uo=4",
-        "artistId": 136975,
-        "amgArtistId": 3644,
-        "primaryGenreName": "Rock",
-        "primaryGenreId": 21
+        "limit": 200,
+
+        "artistId": 372976,
+        "idArtistName": "ABBA",
+        "amgArtistId": 3492,
+        "amgArtistName": "ABBA",
+
+        "badLimit": 250,
+        "badArtistId": "NaN",
+
+        "termMusic": "ABBA",
+        "entityMusic": "album",
+        "attributeMusic": "artistTerm",
+        "wrapperTypeMusic": "collection",
+        "collectionTypeMusic": "Album",
+        
+        "termEbook": "Donna Tartt",
+        "entityEbook": "ebook",
+        "kindEbook": "ebook",
+
+        "termAudiobook": "Donna Tartt",
+        "entityAudiobook": "audiobook",
+        "attributeAudiobook": "authorTerm",
+        "wrapperTypeAudiobook": "audiobook",
+
+        "termMovie": "Thor: Ragnarok",
+        "entityMovie": "movie",
+        "attributeMovie": "movieTerm",
+        "wrapperTypeMovie": "track",
+        "kindMovie": "feature-movie"
     },
+
     {
-        "attribute": "titleTerm",
-        "entity": "audiobook",
-        "term": "Of Mice and Men",
-        "limit": 1,
-        "badLimit": "-",
-        "badId": "-",
+        "termSmoke": "Donna Tartt",
+
+        "explicit": "No",
         "country": "SE",
-        "wrapperType": "audiobook",
-        "artistId": 299088305,
-        "collectionId": 1418818018,
-        "artistName": "John Steinbeck",
-        "collectionName": "Of Mice and Men (Unabridged)",
-        "collectionCensoredName": "Of Mice and Men (Unabridged)",
-        "artistViewUrl": "https://books.apple.com/us/artist/john-steinbeck/299088305?uo=4",
-        "collectionViewUrl": "https://books.apple.com/us/audiobook/of-mice-and-men-unabridged/id1418818018?uo=4",
-        "artworkUrl60": "https://is5-ssl.mzstatic.com/image/thumb/Music116/v4/31/8b/2d/318b2d1e-d594-59d0-8832-f8b1b60bb171/9781101530900.d.jpg/60x60bb.jpg",
-        "artworkUrl100": "https://is5-ssl.mzstatic.com/image/thumb/Music116/v4/31/8b/2d/318b2d1e-d594-59d0-8832-f8b1b60bb171/9781101530900.d.jpg/100x100bb.jpg",
-        "collectionPrice": 6.99,
-        "collectionExplicitness": "notExplicit",
-        "trackCount": 1,
-        "currency": "USD",
-        "releaseDate": "2011-04-13T07:00:00Z",
-        "primaryGenreName": "Fiction",
-        "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/fe/37/6f/fe376f06-a325-8863-13be-a80af42a777f/mzaf_1186412766039708653.std.aac.p.m4a",
-        "description": "Celebrating its 75th anniversary, John Steinbeck’s <i>Of Mice and Men</i> remains one of America's most widely read and beloved novels. Here is Steinbeck’s dramatic adaptation of his novel-as-play, which received the New York Drama Critics’ Circle Award for Best Play in 1937-1938 and has featured a number of actors who have played the iconic roles of George and Lennie on stage and film, including James Earl Jones, John Malkovich and Gary Sinise.From the Nobel Prize-winning author of <i>The Grapes of Wrath</i> and <i>East of Eden</i>, this classic story of an unlikely pair, two migrant workers in California during the Great Depression who grasp for their American Dream, profoundly touches readers and audiences alike. George and his simple-minded friend Lenny dream, as drifters will, of a place to call their own—a couple of acres and a few pigs, chickens, and rabbits back in Hill Country where land is cheap. But after they come to work on a ranch in the fertile Salinas Valley of California, their hopes, like “the best laid schemes o’mice an’ men,” begin to go awry.<br /><i>Of Mice and Men</i> also represents an experiment in form, as Steinbeck described his work, “a kind of playable novel, written in novel form but so scened and set that it can be played as it stands.” A rarity in American letters, it achieved remarkable success as a novel, a Broadway play, and three acclaimed films.",
-        "amgArtistId": 3296287
-    },
-    {
-        "attribute": "authorTerm",
-        "entity": "ebook",
-        "term": "Donna Tartt",
-        "limit": 10,
-        "badLimit": "NaN",
-        "badId": 12345678901234567890,
-        "country": "JP",
+        "limit": 1,
+
         "artistId": 2065736,
-        "artistName": "Donna Tartt",
-        "kind": "ebook",
-        "amgArtistId": 372976 
+        "idArtistName": "Donna Tartt",
+        "amgArtistId": 3644,
+        "amgArtistName": "The Beatles",
+
+        "badLimit": "-",
+        "badArtistId": "NaN",
+
+        "termMusic": "The Beatles",
+        "entityMusic": "song",
+        "attributeMusic": "artistTerm",
+        "wrapperTypeMusic": "track",
+        "collectionTypeMusic": "undefined",
+        
+        "termEbook": "Donna Tartt",
+        "entityEbook": "ebook",
+        "kindEbook": "ebook",
+
+        "termAudiobook": "Donna Tartt",
+        "entityAudiobook": "audiobook",
+        "attributeAudiobook": "authorTerm",
+        "wrapperTypeAudiobook": "audiobook",
+
+        "termMovie": "Thor: Ragnarok",
+        "entityMovie": "movie",
+        "attributeMovie": "movieTerm",
+        "wrapperTypeMovie": "track",
+        "kindMovie": "feature-movie"
+    },
+
+    {
+        "termSmoke": "Donna Tartt",
+
+        "explicit": "Yes",
+        "country": "JP",
+        "limit": 10,
+
+        "artistId": 2065736,
+        "idArtistName": "Donna Tartt",
+        "amgArtistId": 3644,
+        "amgArtistName": "The Beatles",
+
+        "badLimit": "-",
+        "badArtistId": 12345678901234567890,
+
+        "termMusic": "The Beatles",
+        "entityMusic": "song",
+        "attributeMusic": "artistTerm",
+        "wrapperTypeMusic": "track",
+        "collectionTypeMusic": "",
+        
+        "termEbook": "Donna Tartt",
+        "entityEbook": "ebook",
+        "kindEbook": "ebook",
+
+        "termAudiobook": "Donna Tartt",
+        "entityAudiobook": "audiobook",
+        "attributeAudiobook": "authorTerm",
+        "wrapperTypeAudiobook": "audiobook",
+
+        "termMovie": "Thor: Ragnarok",
+        "entityMovie": "movie",
+        "attributeMovie": "movieTerm",
+        "wrapperTypeMovie": "track",
+        "kindMovie": "feature-movie"
     }
 ]
