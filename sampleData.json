@@ -12,7 +12,7 @@
         "amgArtistName": "ABBA",
 
         "badLimit": 250,
-        "badArtistId": 12345678901234567890,
+        "badArtistId": "NaN",
 
         "termMusic": "ABBA",
         "entityMusic": "album",
@@ -49,7 +49,7 @@
         "amgArtistName": "The Beatles",
 
         "badLimit": "-",
-        "badArtistId": "NaN",
+        "badArtistId": "-",
 
         "termMusic": "The Beatles",
         "entityMusic": "song",
@@ -86,7 +86,7 @@
         "amgArtistName": "The Beatles",
 
         "badLimit": "-",
-        "badArtistId": "NaN",
+        "badArtistId": 12345678901234567890,
 
         "termMusic": "The Beatles",
         "entityMusic": "song",
