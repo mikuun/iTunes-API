@@ -70,19 +70,29 @@
 								"exec": [
 									"const jsonData = pm.response.json();\r",
 									"const resultData = pm.response.json().results;\r",
+									"let idType = pm.iterationData.get(\"idType\");\r",
 									"\r",
 									"pm.test(\"Status code is 200\", () => {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"artistID is same as request parameter\", () => {\r",
-									"    pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
 									"});\r",
 									"pm.test(\"Default resultCount is 1\", () => {\r",
 									"    pm.expect(jsonData.resultCount).to.eql(1);\r",
 									"});\r",
 									"pm.test(\"Results length is 1\", () => {\r",
 									"    pm.expect(resultData.length).to.eql(1);\r",
-									"});"
+									"});\r",
+									"\r",
+									"if (idType == \"artistId\") { \r",
+									"    pm.test(\"artistId is same as request parameter\", () => {\r",
+									"        pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
+									"    });\r",
+									"} else if (idType == \"trackId\") {\r",
+									"    pm.test(\"trackId is same as request parameter\", () => {\r",
+									"        pm.expect(resultData[0].trackId).to.eql(pm.iterationData.get(\"artistId\"));\r",
+									"    });\r",
+									"} else {\r",
+									"    console.log(\"No idType detected\")\r",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -671,6 +681,7 @@
 								"exec": [
 									"const jsonData = pm.response.json();\r",
 									"const resultData = pm.response.json().results;\r",
+									"let idType = pm.iterationData.get(\"idType\");\r",
 									"\r",
 									"pm.test(\"Default resultCount is 1\", () => {\r",
 									"    pm.expect(jsonData.resultCount).to.eql(1);\r",
@@ -678,9 +689,18 @@
 									"pm.test(\"Results length is 1\", () => {\r",
 									"    pm.expect(resultData.length).to.eql(1);\r",
 									"});\r",
-									"pm.test(\"artistID is same as request parameter\", () => {\r",
-									"    pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
-									"});"
+									"\r",
+									"if (idType == \"artistId\") { \r",
+									"    pm.test(\"artistId is same as request parameter\", () => {\r",
+									"        pm.expect(resultData[0].artistId).to.eql(pm.iterationData.get(\"artistId\"));\r",
+									"    });\r",
+									"} else if (idType == \"trackId\") {\r",
+									"    pm.test(\"trackId is same as request parameter\", () => {\r",
+									"        pm.expect(resultData[0].trackId).to.eql(pm.iterationData.get(\"artistId\"));\r",
+									"    });\r",
+									"} else {\r",
+									"    console.log(\"No idType detected\")\r",
+									"}"
 								],
 								"type": "text/javascript"
 							}
