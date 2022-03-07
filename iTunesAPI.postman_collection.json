@@ -177,8 +177,8 @@
 							"pm.test(\"Response datatype is object\", () => {",
 							"    pm.expect(jsonData).to.be.an(\"object\");",
 							"});",
-							"pm.test(\"Response time is less than 1500ms\", () => {",
-							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
+							"pm.test(\"Response time is less than 2500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2500);",
 							"});"
 						]
 					}
@@ -343,8 +343,8 @@
 							"    pm.expect(jsonData).to.be.an(\"object\");",
 							"});",
 							"",
-							"pm.test(\"Response time is less than 1500ms\", () => {",
-							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
+							"pm.test(\"Response time is less than 2500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2500);",
 							"});"
 						]
 					}
@@ -651,8 +651,8 @@
 							"pm.test(\"Response datatype is object\", () => {",
 							"    pm.expect(jsonData).to.be.an(\"object\");",
 							"});",
-							"pm.test(\"Response time is less than 1500ms\", () => {",
-							"    pm.expect(pm.response.responseTime).to.be.below(1500);",
+							"pm.test(\"Response time is less than 2500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2500);",
 							"});"
 						]
 					}
@@ -745,6 +745,36 @@
 						}
 					},
 					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"const jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response datatype is object\", () => {",
+							"    pm.expect(jsonData).to.be.an(\"object\");",
+							"});",
+							"pm.test(\"Response time is less than 2500ms\", () => {",
+							"    pm.expect(pm.response.responseTime).to.be.below(2500);",
+							"});"
+						]
+					}
 				}
 			]
 		}
