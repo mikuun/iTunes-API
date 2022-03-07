@@ -7,6 +7,7 @@
         "limit": 200,
 
         "artistId": 372976,
+        "idType": "artistId",
         "idArtistName": "ABBA",
         "amgArtistId": 3492,
         "amgArtistName": "ABBA",
@@ -44,6 +45,7 @@
         "limit": 1,
 
         "artistId": 2065736,
+        "idType": "artistId",
         "idArtistName": "Donna Tartt",
         "amgArtistId": 3644,
         "amgArtistName": "The Beatles",
@@ -57,16 +59,16 @@
         "wrapperTypeMusic": "track",
         "collectionTypeMusic": "undefined",
         
-        "termEbook": "Donna Tartt",
+        "termEbook": "Stephen King",
         "entityEbook": "ebook",
         "kindEbook": "ebook",
 
-        "termAudiobook": "Donna Tartt",
+        "termAudiobook": "Stephen King",
         "entityAudiobook": "audiobook",
         "attributeAudiobook": "authorTerm",
         "wrapperTypeAudiobook": "audiobook",
 
-        "termMovie": "Thor: Ragnarok",
+        "termMovie": "Batman",
         "entityMovie": "movie",
         "attributeMovie": "movieTerm",
         "wrapperTypeMovie": "track",
@@ -74,36 +76,37 @@
     },
 
     {
-        "termSmoke": "Donna Tartt",
+        "termSmoke": "Heat",
 
         "explicit": "Yes",
         "country": "JP",
         "limit": 10,
 
-        "artistId": 2065736,
-        "idArtistName": "Donna Tartt",
-        "amgArtistId": 3644,
-        "amgArtistName": "The Beatles",
+        "artistId": 1028001760,
+        "idType": "trackId",
+        "idArtistName": "Heat",
+        "amgArtistId": 5205,
+        "amgArtistName": "Queen",
 
-        "badLimit": "-",
+        "badLimit": "NaN",
         "badArtistId": 12345678901234567890,
 
-        "termMusic": "The Beatles",
-        "entityMusic": "song",
-        "attributeMusic": "artistTerm",
-        "wrapperTypeMusic": "track",
-        "collectionTypeMusic": "",
+        "termMusic": "Rubber Soul",
+        "entityMusic": "album",
+        "attributeMusic": "albumTerm",
+        "wrapperTypeMusic": "collection",
+        "collectionTypeMusic": "Album",
         
-        "termEbook": "Donna Tartt",
+        "termEbook": "Neil Gaiman",
         "entityEbook": "ebook",
         "kindEbook": "ebook",
 
-        "termAudiobook": "Donna Tartt",
+        "termAudiobook": "Neil Gaiman",
         "entityAudiobook": "audiobook",
         "attributeAudiobook": "authorTerm",
         "wrapperTypeAudiobook": "audiobook",
 
-        "termMovie": "Thor: Ragnarok",
+        "termMovie": "Heat",
         "entityMovie": "movie",
         "attributeMovie": "movieTerm",
         "wrapperTypeMovie": "track",
