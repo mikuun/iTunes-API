@@ -16,6 +16,7 @@
         "badArtistId": "NaN",
 
         "termMusic": "ABBA",
+        "termType": "artist",
         "entityMusic": "album",
         "attributeMusic": "artistTerm",
         "wrapperTypeMusic": "collection",
@@ -54,6 +55,7 @@
         "badArtistId": "-",
 
         "termMusic": "The Beatles",
+        "termType": "artist",
         "entityMusic": "song",
         "attributeMusic": "artistTerm",
         "wrapperTypeMusic": "track",
@@ -92,6 +94,7 @@
         "badArtistId": 12345678901234567890,
 
         "termMusic": "Rubber Soul",
+        "termType": "album",
         "entityMusic": "album",
         "attributeMusic": "albumTerm",
         "wrapperTypeMusic": "collection",
